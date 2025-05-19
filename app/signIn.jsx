@@ -1,26 +1,40 @@
 import Octicons from '@expo/vector-icons/Octicons';
-import { StatusBar } from 'expo-status-bar';
-import { Image, Text, TextInput, TouchableOpacity, View, Pressable, Alert } from 'react-native';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import React, { useRef, useState } from 'react';
 import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useRef, useState } from 'react';
+import { Alert, Image, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import Loading from '../components/loading';
 import CustomKeyboardView from '../components/customKeyboardView';
+import Loading from '../components/loading';
+import { useAuth } from '../context/authContext.jsx';
+
 
 export default function SignIn() {
 
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const {login} = useAuth();
+
     const emailRef = useRef("");
     const passwordRef = useRef("");
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!emailRef.current || !passwordRef.current) {
             Alert.alert("Sign In", "Please fill in all fields");
             return;
         }
+        setLoading(true);
 
+        const response = await login(emailRef.current, passwordRef.current);
+
+        setLoading(false);
+
+        console.log('got result: ', response);
+
+        if(!response.success){
+            Alert.alert("Sign In", response.msg);
+        }
         //login process
     }
 
@@ -50,7 +64,7 @@ export default function SignIn() {
                             <View style={{ height: hp(7) }} className="w-5/6 flex-row items-center gap-4 px-4 bg-neutral-100 rounded-2xl">
                                 <Octicons name="mail" size={hp(2.7)} color="gray" />
                                 <TextInput
-                                    onChange={value => emailRef.current = value}
+                                    onChangeText={value => emailRef.current = value}
                                     className="flex-1 h-full text-neutral-800"
                                     placeholder='Email Address'
                                     placeholderTextColor={"gray"}
@@ -61,7 +75,7 @@ export default function SignIn() {
                                 <View style={{ height: hp(7) }} className="w-full flex-row items-center gap-4 px-4 bg-neutral-100 rounded-2xl">
                                     <Octicons name="lock" size={hp(2.7)} color="gray" />
                                     <TextInput
-                                        onChange={value => passwordRef.current = value}
+                                        onChangeText={value => passwordRef.current = value}
                                         secureTextEntry
                                         className="flex-1 h-full text-neutral-800"
                                         placeholder='Password'

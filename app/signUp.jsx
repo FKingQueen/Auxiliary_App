@@ -5,22 +5,37 @@ import { useRef, useState } from 'react';
 import { Alert, Image, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import Loading from '../components/loading';
 import CustomKeyboardView from '../components/customKeyboardView';
+import Loading from '../components/loading';
+
+import { useAuth } from '../context/authContext.jsx';
 
 export default function SignUp() {
 
     const router = useRouter();
+    const { register } = useAuth();
     const [loading, setLoading] = useState(false);
+
     const emailRef = useRef("");
     const passwordRef = useRef("");
     const usernameRef = useRef("");
     const profileURLRef = useRef("");
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!emailRef.current || !passwordRef.current || !usernameRef.current || !profileURLRef.current) {
             Alert.alert("Sign Up", "Please fill in all fields");
             return;
+        }
+
+        setLoading(true);
+
+        let response = await register(emailRef.current, passwordRef.current, usernameRef.current, profileURLRef.current);
+        setLoading(false);
+
+        console.log('got result: ', response);
+        
+        if(!response.success){
+            Alert.alert("Sign Up", response.msg);
         }
 
         //login process
@@ -46,7 +61,7 @@ export default function SignUp() {
                             <View style={{ height: hp(7) }} className="w-5/6 flex-row items-center gap-4 px-4 bg-neutral-100 rounded-2xl">
                                 <Octicons name="person" size={hp(2.7)} color="gray" />
                                 <TextInput
-                                    onChange={value => usernameRef.current = value}
+                                    onChangeText={value => usernameRef.current = value}
                                     className="flex-1 h-full text-neutral-800"
                                     placeholder='Username'
                                     placeholderTextColor={"gray"}
@@ -56,7 +71,7 @@ export default function SignUp() {
                             <View style={{ height: hp(7) }} className="w-5/6 flex-row items-center gap-4 px-4 bg-neutral-100 rounded-2xl">
                                 <Octicons name="mail" size={hp(2.7)} color="gray" />
                                 <TextInput
-                                    onChange={value => emailRef.current = value}
+                                    onChangeText={value => emailRef.current = value}
                                     className="flex-1 h-full text-neutral-800"
                                     placeholder='Email Address'
                                     placeholderTextColor={"gray"}
@@ -66,7 +81,7 @@ export default function SignUp() {
                             <View style={{ height: hp(7) }} className="w-5/6 flex-row items-center gap-4 px-4 bg-neutral-100 rounded-2xl">
                                 <Octicons name="lock" size={hp(2.7)} color="gray" />
                                 <TextInput
-                                    onChange={value => passwordRef.current = value}
+                                    onChangeText={value => passwordRef.current = value}
                                     secureTextEntry
                                     className="flex-1 h-full text-neutral-800"
                                     placeholder='Password'
@@ -77,9 +92,9 @@ export default function SignUp() {
                             <View style={{ height: hp(7) }} className="w-5/6 flex-row items-center gap-4 px-4 bg-neutral-100 rounded-2xl">
                                 <Octicons name="image" size={hp(2.4)} color="gray" />
                                 <TextInput
-                                    onChange={value => profileURLRef.current = value}
+                                    onChangeText={value => profileURLRef.current = value}
                                     className="flex-1 h-full text-neutral-800"
-                                    placeholder='Password'
+                                    placeholder='Profile URL'
                                     placeholderTextColor={"gray"}
                                 />
                             </View>

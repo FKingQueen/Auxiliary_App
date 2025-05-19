@@ -1,10 +1,23 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Pressable, Text, View } from 'react-native';
+
+import { useAuth } from '../../context/authContext.jsx';
 
 export default function Home() {
+  const { logout, user } = useAuth(); 
+
+  const handleLogout = async () => {
+    await logout();
+  }
+
+  // console.log('user data: ', user);
   return (
     <View>
       <Text>Home</Text>
+      <Pressable onPress={handleLogout} className="bg-red-500 mt-4 py-2 rounded-md">
+        <Text>
+          Sign Out
+        </Text>
+      </Pressable>
     </View>
   )
 }
