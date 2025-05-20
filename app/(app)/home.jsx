@@ -11,7 +11,7 @@ export default function Home() {
 
   // console.log('user data: ', user);
   return (
-    <View>
+    <View className="flex-1 bgg-white">
       <Text>Home</Text>
       <Pressable onPress={handleLogout} className="bg-red-500 mt-4 py-2 rounded-md">
         <Text>
