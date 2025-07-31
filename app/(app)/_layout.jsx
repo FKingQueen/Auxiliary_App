@@ -3,82 +3,11 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Tabs, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 
-
-export default function _layout() {
+const LoggedInLayout = () => {
   const router = useRouter();
-  const [isStoreModalVisible, setIsStoreModalVisible] = useState(false);
-
-  // Sample store data - replace with your actual store data
-  const stores = [
-    { id: 1, name: 'Downtown Store', address: '123 Main St', phone: '(555) 123-4567' },
-    { id: 2, name: 'Mall Branch', address: '456 Shopping Blvd', phone: '(555) 234-5678' },
-    { id: 3, name: 'Airport Location', address: '789 Terminal Dr', phone: '(555) 345-6789' },
-    { id: 4, name: 'Westside Branch', address: '321 West Ave', phone: '(555) 456-7890' },
-    { id: 5, name: 'North Plaza', address: '654 North St', phone: '(555) 567-8901' },
-    { id: 6, name: 'South Center', address: '987 South Rd', phone: '(555) 678-9012' },
-    { id: 7, name: 'Express Kiosk', address: '147 Quick Stop', phone: '(555) 789-0123' },
-  ];
-
-  const handleStoreSelect = (store) => {
-    console.log('Selected store:', store.name);
-    setIsStoreModalVisible(false);
-    // You can add navigation or state update here
-    // router.push(`/store/${store.id}`);
-  };
-
-  const StoreModal = () => (
-    <Modal
-      visible={isStoreModalVisible}
-      transparent={true}
-      animationType="slide"
-      onRequestClose={() => setIsStoreModalVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Select Store</Text>
-            <Pressable
-              onPress={() => setIsStoreModalVisible(false)}
-              style={styles.closeButton}
-            >
-              <MaterialCommunityIcons name="close" size={24} color="#666" />
-            </Pressable>
-          </View>
-
-          <FlatList
-            data={stores}
-            keyExtractor={(item) => item.id.toString()}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <Pressable
-                onPress={() => handleStoreSelect(item)}
-                style={styles.storeItem}
-              >
-                <View style={styles.storeInfo}>
-                  <FontAwesome5 name="store" size={20} color="#007AFF" />
-                  <View style={styles.storeDetails}>
-                    <Text style={styles.storeName}>{item.name}</Text>
-                    <Text style={styles.storeAddress}>{item.address}</Text>
-                    <Text style={styles.storePhone}>{item.phone}</Text>
-                  </View>
-                </View>
-                <MaterialCommunityIcons
-                  name="chevron-right"
-                  size={20}
-                  color="#ccc"
-                />
-              </Pressable>
-            )}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-          />
-        </View>
-      </View>
-    </Modal>
-  );
   return (
     <>
       <Tabs>
@@ -119,7 +48,6 @@ export default function _layout() {
                 <Pressable
                   onPress={() => {
                     console.log('stores pressed');
-                    setIsStoreModalVisible(true);
                   }}
                   style={{ padding: 8 }}
                 >
@@ -154,8 +82,14 @@ export default function _layout() {
           }}
         />
       </Tabs>
-      <StoreModal />
     </>
+  )
+}
+
+
+export default function RootLayout() {
+  return (
+    <LoggedInLayout />
   )
 }
 
